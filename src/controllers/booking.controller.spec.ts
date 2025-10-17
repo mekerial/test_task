@@ -43,31 +43,32 @@ describe('BookingController', () => {
 
     const result = await controller.reserveBooking(reserveDto);
     expect(result).toEqual(expectedBooking);
-    expect(service.reserveBooking).toHaveBeenCalledWith(reserveDto);
+    expect(service.reserveBooking.bind(service)).toHaveBeenCalledWith(
+      reserveDto,
+    );
   });
 
   it('should throw ConflictException when user already booked', async () => {
     const reserveDto = { event_id: 1, user_id: 'user123' };
-    
+
     mockBookingService.reserveBooking.mockRejectedValue(
-      new ConflictException('User has already booked a seat for this event')
+      new ConflictException('User has already booked a seat for this event'),
     );
 
     await expect(controller.reserveBooking(reserveDto)).rejects.toThrow(
-      ConflictException
+      ConflictException,
     );
   });
 
   it('should throw NotFoundException when event not found', async () => {
     const reserveDto = { event_id: 999, user_id: 'user123' };
-    
+
     mockBookingService.reserveBooking.mockRejectedValue(
-      new NotFoundException('Event not found')
+      new NotFoundException('Event not found'),
     );
 
     await expect(controller.reserveBooking(reserveDto)).rejects.toThrow(
-      NotFoundException
+      NotFoundException,
     );
   });
 });
-

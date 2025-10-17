@@ -11,4 +11,3 @@ export class ReserveBookingDto {
   @Length(1, 128)
   user_id: string;
 }
-

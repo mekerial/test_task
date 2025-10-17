@@ -46,6 +46,27 @@ API для бронирования места на мероприятие. Од
 - user_id (VARCHAR)
 - created_at (TIMESTAMP)
 
+## Настройка окружения
+
+1. Скопируйте файл `env.example` в `.env`:
+```bash
+cp env.example .env
+```
+
+2. Отредактируйте `.env` файл с вашими настройками:
+```bash
+# Database Configuration
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=your_secure_password
+DB_NAME=booking_db
+
+# Application Configuration
+PORT=3000
+NODE_ENV=development
+```
+
 ## Запуск с Docker
 
 ```bash

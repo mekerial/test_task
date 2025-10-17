@@ -11,4 +11,3 @@ import { Event } from '../entities/event.entity';
   providers: [BookingService],
 })
 export class BookingModule {}
-

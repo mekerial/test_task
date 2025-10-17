@@ -12,4 +12,3 @@ export class BookingController {
     return await this.bookingService.reserveBooking(reserveBookingDto);
   }
 }
-

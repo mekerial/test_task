@@ -1,4 +1,8 @@
-import { Injectable, ConflictException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  ConflictException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Booking } from '../entities/booking.entity';
@@ -19,7 +23,7 @@ export class BookingService {
 
     // Проверяем, существует ли событие
     const event = await this.eventRepository.findOne({
-      where: { id: event_id }
+      where: { id: event_id },
     });
 
     if (!event) {
@@ -28,16 +32,18 @@ export class BookingService {
 
     // Проверяем, не забронировал ли уже пользователь место на это событие
     const existingBooking = await this.bookingRepository.findOne({
-      where: { event_id, user_id }
+      where: { event_id, user_id },
     });
 
     if (existingBooking) {
-      throw new ConflictException('User has already booked a seat for this event');
+      throw new ConflictException(
+        'User has already booked a seat for this event',
+      );
     }
 
     // Проверяем, есть ли свободные места
     const bookedSeats = await this.bookingRepository.count({
-      where: { event_id }
+      where: { event_id },
     });
 
     if (bookedSeats >= event.total_seats) {
@@ -52,13 +58,32 @@ export class BookingService {
 
     try {
       return await this.bookingRepository.save(booking);
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Код ошибки 23505 - уникальное ограничение (PostgreSQL)
-      if (error && (error.code === '23505' || error?.driverError?.code === '23505')) {
-        throw new ConflictException('User has already booked a seat for this event');
+      if (
+        error &&
+        typeof error === 'object' &&
+        'code' in error &&
+        error.code === '23505'
+      ) {
+        throw new ConflictException(
+          'User has already booked a seat for this event',
+        );
+      }
+      if (error && typeof error === 'object' && 'driverError' in error) {
+        const driverError = (error as { driverError: unknown }).driverError;
+        if (
+          driverError &&
+          typeof driverError === 'object' &&
+          'code' in driverError &&
+          driverError.code === '23505'
+        ) {
+          throw new ConflictException(
+            'User has already booked a seat for this event',
+          );
+        }
       }
       throw error;
     }
   }
 }
-

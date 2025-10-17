@@ -1,4 +1,12 @@
-import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn, CreateDateColumn, Unique } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+  CreateDateColumn,
+  Unique,
+} from 'typeorm';
 import { Event } from './event.entity';
 
 @Entity('bookings')
@@ -16,8 +24,7 @@ export class Booking {
   @CreateDateColumn({ type: 'timestamp' })
   created_at: Date;
 
-  @ManyToOne(() => Event, event => event.bookings)
+  @ManyToOne(() => Event, (event) => event.bookings)
   @JoinColumn({ name: 'event_id' })
   event: Event;
 }
-
